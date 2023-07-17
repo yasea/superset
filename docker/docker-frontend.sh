@@ -25,5 +25,8 @@ cd /app/superset-frontend
 npm install -f --no-optional --global webpack webpack-cli
 npm install -f --no-optional
 
+npm install @ant-design/plots
+npm i -S superset-plugin-chart-liquid
+
 echo "Running frontend"
 npm run dev
