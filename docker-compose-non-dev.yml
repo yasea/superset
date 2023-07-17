@@ -21,7 +21,8 @@ x-superset-depends-on: &superset-depends-on
 x-superset-volumes: &superset-volumes
   # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
   - ./docker:/app/docker
-  - superset_home:/app/superset_home
+  - ./superset:/app/superset
+  - ./superset-frontend:/app/superset-frontend
 
 version: "3.7"
 services:
@@ -29,8 +30,8 @@ services:
     image: redis:7
     container_name: superset_cache
     restart: unless-stopped
-    volumes:
-      - redis:/data
+    #volumes:
+    #  - redis:/data
 
   db:
     env_file: docker/.env-non-dev
@@ -49,6 +50,14 @@ services:
     restart: unless-stopped
     ports:
       - 8088:8088
+    depends_on: *superset-depends-on
+    volumes: *superset-volumes
+    
+  superset-node:
+    image: node:16
+    container_name: superset_node
+    command: ["/app/docker/docker-frontend.sh"]
+    env_file: docker/.env-non-dev
     depends_on: *superset-depends-on
     volumes: *superset-volumes
 
@@ -92,5 +101,5 @@ volumes:
     external: false
   db_home:
     external: false
-  redis:
-    external: false
+  #redis:
+  #   external: false
